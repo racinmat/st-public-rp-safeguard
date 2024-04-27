@@ -1,11 +1,11 @@
 {
-    "display_name": "Name Displayed in SillyTavern",
-    "loading_order": 9,
+    "display_name": "Public Role-playing safeguard",
+    "loading_order": 101,
     "requires": [],
     "optional": [],
     "js": "index.js",
     "css": "style.css",
-    "author": "yourNameHere",
+    "author": "Matěj Račinský",
     "version": "1.0.0",
-    "homePage": "yourUrlHere"
+    "homePage": "www.github.com/racinmat"
 }

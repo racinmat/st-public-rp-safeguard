@@ -1,33 +1,34 @@
-# SillyTavern Extension Example
+# Public role-playing safeguards
 
-*Provide a brief description of how your extension works, what problem it aims to solve.*
+This extension provides a set of safeguards for role-playing by various users which might want to try to break the 
+experience or change the settings, which is applicable e.g. if the Silly Tavern is part of a tech demo and visitors
+are supposed to role-play, but in controlled environment.
 
 ## Features
 
-*Describe some of the main selling points of your extension.*
+Currently, there are following features:
+- hiding the settings and disabling commands
+- adding a button for restarting the chat
+- automatically restarting the chat after certain time of inactivity
 
 ## Installation and Usage
 
 ### Installation
 
-*In most cases, this should just be using ST's inbuilt extension installer.* 
+Just add it as the extension.
 
 ### Usage
 
-*Explain how to use this extension.*
+Nothing, the extension does not have any active elements.
 
 ## Prerequisites
 
-*Specify the version of ST necessary here.*
+Developed and tested in version 1.11.5 of the Silly Tavern, but should work fine on any version. 
 
 ## Support and Contributions
 
-*Where should someone ask for support?*
-
-*Consider including your own contact info for help/questions.*
-
-*How can people help add to this extension?*
+Feel free to ask in the github issues or contribute by pull requests.
 
 ## License
 
-*Be cool, use an open source license.*
+This project is licensed under the MIT License.
