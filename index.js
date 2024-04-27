@@ -48,6 +48,7 @@ function applySettings() {
     if (extension_settings[extensionName].disable_slash_commands) {
         console.log('Disabling slash commands');
         parser.commands = {};
+        parser.helpStrings = {};
         // some commands are added dynamically after this point, even if this extensions is loaded as the last one,
         // so we overwrite it by empty commands adding
         // assign it a lambda with following signature addCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true)
