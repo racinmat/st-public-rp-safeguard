@@ -26,6 +26,8 @@ async function loadSettings() {
     // Updating settings in the UI
     $('#rp-safeguard-disable-commands').prop('checked', extension_settings[extensionName].disable_slash_commands).trigger('input');
     $('#rp-safeguard-hide-panels').prop('checked', extension_settings[extensionName].hide_panels).trigger('input');
+    $('#rp-safeguard-add-reset-button').prop('checked', extension_settings[extensionName].add_reset_bvtton).trigger('input');
+    $('#rp-safeguard-hide-menus').prop('checked', extension_settings[extensionName].hide_menus).trigger('input');
 }
 
 function onDisableSlashCommands(event) {
