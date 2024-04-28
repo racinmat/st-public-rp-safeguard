@@ -2,12 +2,12 @@
 // The following are examples of some basic extension functionality
 
 //You'll likely need to import extension_settings, getContext, and loadExtensionSettings from extensions.js
-import { extension_settings } from '../../../extensions.js';
+import {extension_settings} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
-import { doTogglePanels, saveSettingsDebounced } from '../../../../script.js';
-import { parser, setRegisterSlashCommand } from '../../../slash-commands.js';
-import { doNewChat } from '../../../power-user.js';
+import {doTogglePanels, saveSettingsDebounced} from '../../../../script.js';
+import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
+import {doNewChat} from '../../../power-user.js';
 
 // Keep track of where your extension is located, name should match repo name
 const extensionName = 'st-public-rp-safeguard';
@@ -28,16 +28,25 @@ async function loadSettings() {
     $('#rp-safeguard-hide-panels').prop('checked', extension_settings[extensionName].hide_panels).trigger('input');
 }
 
-// This function is called when the extension settings are changed in the UI
 function onDisableSlashCommands(event) {
     extension_settings[extensionName].disable_slash_commands = Boolean($(event.target).prop('checked'));
     saveSettingsDebounced();
 }
 
-// This function is called when the extension settings are changed in the UI
 function onHidePanels(event) {
     extension_settings[extensionName].hide_panels = Boolean($(event.target).prop('checked'));
     saveSettingsDebounced();
+}
+
+function onAddResetButton(event) {
+    extension_settings[extensionName].add_reset_bvtton = Boolean($(event.target).prop('checked'));
+    saveSettingsDebounced();
+}
+
+function onHideMenus(event) {
+    extension_settings[extensionName].hide_menus = Boolean($(event.target).prop('checked'));
+    saveSettingsDebounced();
+
 }
 
 function dummyAddCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true) {
@@ -45,7 +54,7 @@ function dummyAddCommand(command, callback, aliases, helpString = '', interrupts
 }
 
 
-function applySettings() {
+async function applySettings() {
     if (extension_settings[extensionName].disable_slash_commands) {
         console.log('Disabling slash commands');
         // some commands are added dynamically after this point, even if this extension is loaded as the last one,
@@ -60,6 +69,23 @@ function applySettings() {
     }
     if (extension_settings[extensionName].hide_panels) {
         doTogglePanels();
+    }
+    if (extension_settings[extensionName].add_reset_bvtton) {
+        const restartChatHtml = await $.get(`${extensionFolderPath}/restart_chat.html`);
+        $('#leftSendForm').append(restartChatHtml);
+    }
+    if (extension_settings[extensionName].hide_menus) {
+        // Apply CSS styles to #extensionsMenuButton
+        $('#extensionsMenuButton').css('display', 'none');
+
+        // Apply CSS styles to #options_button
+        $('#options_button').css('display', 'none');
+
+        // Apply CSS styles to .mes .mes_edit
+        $('.mes .mes_edit').css('display', 'none');
+
+        // Apply CSS styles to .mes .extraMesButtonsHint
+        $('.mes .extraMesButtonsHint').css('display', 'none');
     }
 }
 
@@ -76,10 +102,9 @@ jQuery(async () => {
     // These are examples of listening for events
     $('#rp-safeguard-disable-commands').on('input', onDisableSlashCommands);
     $('#rp-safeguard-hide-panels').on('input', onHidePanels);
+    $('#rp-safeguard-add-reset-button').on('input', onAddResetButton);
+    $('#rp-safeguard-hide-menus').on('input', onHideMenus);
 
-    // Adding
-    const restartChatHtml = await $.get(`${extensionFolderPath}/restart_chat.html`);
-    $('#leftSendForm').append(restartChatHtml);
     // button for restarting chat
     $('#option_start_new_chat2').on('click', () => {
         doNewChat();    // annoying popup blicks, discuss if it's a problem
@@ -88,6 +113,6 @@ jQuery(async () => {
     // Load settings when starting things up (if you have any)
     loadSettings();
     // this must run after all other extensions have finished loading, otherwise their commands will be present
-    applySettings();
+    await applySettings();
 
 });
