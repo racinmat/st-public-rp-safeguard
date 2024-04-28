@@ -28,6 +28,7 @@ async function loadSettings() {
     $('#rp-safeguard-hide-panels').prop('checked', extension_settings[extensionName].hide_panels).trigger('input');
     $('#rp-safeguard-add-reset-button').prop('checked', extension_settings[extensionName].add_reset_bvtton).trigger('input');
     $('#rp-safeguard-hide-menus').prop('checked', extension_settings[extensionName].hide_menus).trigger('input');
+    $('#rp-safeguard-restart-idle-chat').prop('checked', extension_settings[extensionName].restart_idle_chat).trigger('input');
 }
 
 function onDisableSlashCommands(event) {
@@ -51,10 +52,34 @@ function onHideMenus(event) {
 
 }
 
+function onRestartIdleChat(event) {
+    extension_settings[extensionName].restart_idle_chat = Boolean($(event.target).prop('checked'));
+    saveSettingsDebounced();
+}
+
 function dummyAddCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true) {
     console.log('Command disabled because the disabling slash commands in st-public-rp-safeguard extension is on:', command, callback, aliases, helpString, interruptsGeneration, purgeFromMessage);
 }
 
+
+// functionality for resetting chat after some time of inactivity
+let timeoutId;
+
+function doNewChatWithLog() {
+    console.log("doNewChat function is being called");
+    doNewChat();
+}
+
+function resetTimer() {
+    // Clear the existing timeout
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+    }
+    const minutes = 5;
+    // Set a new timeout
+
+    timeoutId = setTimeout(doNewChatWithLog, minutes * 60 * 1000); // 5 minutes
+}
 
 async function applySettings() {
     if (extension_settings[extensionName].disable_slash_commands) {
@@ -89,6 +114,18 @@ async function applySettings() {
         // Apply CSS styles to .mes .extraMesButtonsHint
         $('.mes .extraMesButtonsHint').css('display', 'none');
     }
+    if (extension_settings[extensionName].restart_idle_chat) {
+        // Call resetTimer right away to start the timer
+        console.log('Starting idle chat timer')
+        resetTimer();
+
+        // Whenever there's activity, reset the timer
+        // window.addEventListener('mousemove', resetTimer);
+        window.addEventListener('mousedown', resetTimer);
+        window.addEventListener('keypress', resetTimer);
+        // window.addEventListener('touchmove', resetTimer);
+    }
+
 }
 
 // This function is called when the extension is loaded
@@ -106,6 +143,7 @@ jQuery(async () => {
     $('#rp-safeguard-hide-panels').on('input', onHidePanels);
     $('#rp-safeguard-add-reset-button').on('input', onAddResetButton);
     $('#rp-safeguard-hide-menus').on('input', onHideMenus);
+    $('#rp-safeguard-restart-idle-chat').on('input', onRestartIdleChat);
 
     // button for restarting chat
     $('#option_start_new_chat2').on('click', () => {
