@@ -7,6 +7,7 @@ import { extension_settings } from '../../../extensions.js';
 //You'll likely need to import some other functions from the main script
 import { doTogglePanels, saveSettingsDebounced } from '../../../../script.js';
 import { parser, setRegisterSlashCommand } from '../../../slash-commands.js';
+import { doNewChat } from '../../../power-user.js';
 
 // Keep track of where your extension is located, name should match repo name
 const extensionName = 'st-public-rp-safeguard';
@@ -64,7 +65,7 @@ function applySettings() {
 
 // This function is called when the extension is loaded
 jQuery(async () => {
-    // This is an example of loading HTML from a file
+    // Adding new options to the settings menu
     const settingsHtml = await $.get(`${extensionFolderPath}/settings.html`);
 
     // Append settingsHtml to extensions_settings
@@ -76,8 +77,17 @@ jQuery(async () => {
     $('#rp-safeguard-disable-commands').on('input', onDisableSlashCommands);
     $('#rp-safeguard-hide-panels').on('input', onHidePanels);
 
+    // Adding
+    const restartChatHtml = await $.get(`${extensionFolderPath}/restart_chat.html`);
+    $('#leftSendForm').append(restartChatHtml);
+    // button for restarting chat
+    $('#option_start_new_chat2').on('click', () => {
+        doNewChat();    // annoying popup blicks, discuss if it's a problem
+    });
+
     // Load settings when starting things up (if you have any)
     loadSettings();
     // this must run after all other extensions have finished loading, otherwise their commands will be present
     applySettings();
+
 });

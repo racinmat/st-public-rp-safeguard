@@ -3,9 +3,11 @@
 #extensionsMenuButton {
     display: none !important;
 }
+
 #options_button {
     display: none !important;
 }
+
 /* this hides edit button from character messages, not user */
 /*.mes[is_user="false"] .mes_edit {*/
 /*    display: none !important;*/
@@ -14,6 +16,13 @@
 .mes .mes_edit {
     display: none !important;
 }
+
 .mes .extraMesButtonsHint {
     display: none !important;
+}
+
+#option_start_new_chat2 {
+    display: inline-block;
+    cursor: pointer;
+
 }
