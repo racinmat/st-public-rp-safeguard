@@ -6,3 +6,14 @@
 #options_button {
     display: none !important;
 }
+/* this hides edit button from character messages, not user */
+/*.mes[is_user="false"] .mes_edit {*/
+/*    display: none !important;*/
+/*}*/
+/* edit button allows changing order of messages, hiding it for all messages */
+.mes .mes_edit {
+    display: none !important;
+}
+.mes .extraMesButtonsHint {
+    display: none !important;
+}

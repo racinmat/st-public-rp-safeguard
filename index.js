@@ -47,14 +47,15 @@ function dummyAddCommand(command, callback, aliases, helpString = '', interrupts
 function applySettings() {
     if (extension_settings[extensionName].disable_slash_commands) {
         console.log('Disabling slash commands');
-        parser.commands = {};
-        parser.helpStrings = {};
-        // some commands are added dynamically after this point, even if this extensions is loaded as the last one,
-        // so we overwrite it by empty commands adding
+        // some commands are added dynamically after this point, even if this extension is loaded as the last one,
+        // so we overwrite it by dummy method which does not do anything
         // assign it a lambda with following signature addCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true)
         parser.addCommand = dummyAddCommand;
         // need to rewrite the following functions, because otherwise they keep the reference to the original ones
         setRegisterSlashCommand(dummyAddCommand);
+        // due to the asynchronous nature of loading extensions, I need to first disable adding new stuff and then clear the existing ones
+        parser.commands = {};
+        parser.helpStrings = {};
     }
     if (extension_settings[extensionName].hide_panels) {
         doTogglePanels();
