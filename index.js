@@ -100,6 +100,10 @@ async function applySettings() {
     if (extension_settings[extensionName].add_reset_bvtton) {
         const restartChatHtml = await $.get(`${extensionFolderPath}/restart_chat.html`);
         $('#leftSendForm').append(restartChatHtml);
+        // button for restarting chat
+        $('#option_start_new_chat2').on('click', () => {
+            doNewChatWithLog();    // annoying popup blicks, discuss if it's a problem
+        });
     }
     if (extension_settings[extensionName].hide_menus) {
         // Apply CSS styles to #extensionsMenuButton
@@ -144,11 +148,6 @@ jQuery(async () => {
     $('#rp-safeguard-add-reset-button').on('input', onAddResetButton);
     $('#rp-safeguard-hide-menus').on('input', onHideMenus);
     $('#rp-safeguard-restart-idle-chat').on('input', onRestartIdleChat);
-
-    // button for restarting chat
-    $('#option_start_new_chat2').on('click', () => {
-        doNewChatWithLog();    // annoying popup blicks, discuss if it's a problem
-    });
 
     // Load settings when starting things up (if you have any)
     loadSettings();
