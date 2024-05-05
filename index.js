@@ -147,7 +147,7 @@ jQuery(async () => {
 
     // button for restarting chat
     $('#option_start_new_chat2').on('click', () => {
-        doNewChat();    // annoying popup blicks, discuss if it's a problem
+        doNewChatWithLog();    // annoying popup blicks, discuss if it's a problem
     });
 
     // Load settings when starting things up (if you have any)
