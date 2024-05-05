@@ -26,7 +26,7 @@ async function loadSettings() {
     // Updating settings in the UI
     $('#rp-safeguard-disable-commands').prop('checked', extension_settings[extensionName].disable_slash_commands).trigger('input');
     $('#rp-safeguard-hide-panels').prop('checked', extension_settings[extensionName].hide_panels).trigger('input');
-    $('#rp-safeguard-add-reset-button').prop('checked', extension_settings[extensionName].add_reset_bvtton).trigger('input');
+    $('#rp-safeguard-add-reset-button').prop('checked', extension_settings[extensionName].add_reset_button).trigger('input');
     $('#rp-safeguard-hide-menus').prop('checked', extension_settings[extensionName].hide_menus).trigger('input');
     $('#rp-safeguard-restart-idle-chat').prop('checked', extension_settings[extensionName].restart_idle_chat).trigger('input');
     console.log('loaded language:', extension_settings[extensionName].ui_language);
@@ -44,7 +44,7 @@ function onHidePanels(event) {
 }
 
 function onAddResetButton(event) {
-    extension_settings[extensionName].add_reset_bvtton = Boolean($(event.target).prop('checked'));
+    extension_settings[extensionName].add_reset_button = Boolean($(event.target).prop('checked'));
     saveSettingsDebounced();
 }
 
@@ -127,7 +127,7 @@ async function applySettings() {
     if (extension_settings[extensionName].hide_panels) {
         doTogglePanels();
     }
-    if (extension_settings[extensionName].add_reset_bvtton) {
+    if (extension_settings[extensionName].add_reset_button) {
         const restartChatHtml = await $.get(`${extensionFolderPath}/restart_chat.html`);
         $('#leftSendForm').append(restartChatHtml);
         // button for restarting chat
