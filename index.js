@@ -5,7 +5,7 @@
 import {extension_settings} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
-import {doTogglePanels, saveSettingsDebounced} from '../../../../script.js';
+import {doTogglePanels, saveSettingsDebounced, durationSaveEdit} from '../../../../script.js';
 import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
 import {doNewChat} from '../../../power-user.js';
 
@@ -29,6 +29,8 @@ async function loadSettings() {
     $('#rp-safeguard-add-reset-button').prop('checked', extension_settings[extensionName].add_reset_bvtton).trigger('input');
     $('#rp-safeguard-hide-menus').prop('checked', extension_settings[extensionName].hide_menus).trigger('input');
     $('#rp-safeguard-restart-idle-chat').prop('checked', extension_settings[extensionName].restart_idle_chat).trigger('input');
+    console.log('loaded language:', extension_settings[extensionName].ui_language);
+    $('#rp-safeguard-ui-language').val(extension_settings[extensionName].ui_language).trigger('input');
 }
 
 function onDisableSlashCommands(event) {
@@ -49,12 +51,40 @@ function onAddResetButton(event) {
 function onHideMenus(event) {
     extension_settings[extensionName].hide_menus = Boolean($(event.target).prop('checked'));
     saveSettingsDebounced();
-
 }
 
 function onRestartIdleChat(event) {
     extension_settings[extensionName].restart_idle_chat = Boolean($(event.target).prop('checked'));
     saveSettingsDebounced();
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setUILanguage(language) {
+    // taken from i18n.js
+    const currentLanguage = localStorage.getItem('language');
+    // because this code runs on startup, we need to stop the recursion
+    if (language !== currentLanguage) {
+        console.log("changing the language from", currentLanguage, "to", language);
+        if (language) {
+            localStorage.setItem('language', language);
+        } else {
+            localStorage.removeItem('language');
+        }
+        location.reload();
+    }
+}
+
+async function onChangeUILanguage(event) {
+    const language = String($('#rp-safeguard-ui-language').val());
+    console.log("set language:", language)
+    extension_settings[extensionName].ui_language = language;
+    saveSettingsDebounced();
+    // wait asynchronously
+    await delay(durationSaveEdit);    // apparently we need to wait, otherwise it does not get stored
+    setUILanguage(language);
 }
 
 function dummyAddCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true) {
@@ -129,7 +159,9 @@ async function applySettings() {
         window.addEventListener('keypress', resetTimer);
         // window.addEventListener('touchmove', resetTimer);
     }
-
+    if (extension_settings[extensionName].ui_language) {
+        setUILanguage(extension_settings[extensionName].ui_language);
+    }
 }
 
 // This function is called when the extension is loaded
@@ -148,9 +180,10 @@ jQuery(async () => {
     $('#rp-safeguard-add-reset-button').on('input', onAddResetButton);
     $('#rp-safeguard-hide-menus').on('input', onHideMenus);
     $('#rp-safeguard-restart-idle-chat').on('input', onRestartIdleChat);
+    $('#rp-safeguard-ui-language-button').on('click', onChangeUILanguage);
 
     // Load settings when starting things up (if you have any)
-    loadSettings();
+    await loadSettings();
     // this must run after all other extensions have finished loading, otherwise their commands will be present
     await applySettings();
 
