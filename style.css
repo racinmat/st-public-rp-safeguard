@@ -1,8 +1,9 @@
 /* All style elements for your extension go here */
 /* make the following override all the others, now it's overriden by display: flex */
-/*#extensionsMenuButton {*/
-/*    display: none !important;*/
-/*}*/
+/* hack, because the js-based hiding does not work */
+#extensionsMenuButton {
+    display: none !important;
+}
 
 /*#options_button {*/
 /*    display: none !important;*/
@@ -24,5 +25,5 @@
 #option_start_new_chat2 {
     display: inline-block;
     cursor: pointer;
-
 }
+
