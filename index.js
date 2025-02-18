@@ -5,9 +5,8 @@
 import {extension_settings} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
-import {doTogglePanels, saveSettingsDebounced, durationSaveEdit} from '../../../../script.js';
+import {doTogglePanels, saveSettingsDebounced, durationSaveEdit, doNewChat} from '../../../../script.js';
 import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
-import {doNewChat} from '../../../power-user.js';
 
 // Keep track of where your extension is located, name should match repo name
 const extensionName = 'st-public-rp-safeguard';
