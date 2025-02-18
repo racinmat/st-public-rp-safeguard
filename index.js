@@ -5,8 +5,8 @@
 import {extension_settings} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
-import {doTogglePanels, saveSettingsDebounced, durationSaveEdit, doNewChat} from '../../../../script.js';
-import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
+import {doTogglePanels, saveSettingsDebounced, DEFAULT_SAVE_EDIT_TIMEOUT, doNewChat} from '../../../../script.js';
+// import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
 
 // Keep track of where your extension is located, name should match repo name
 const extensionName = 'st-public-rp-safeguard';
@@ -82,7 +82,7 @@ async function onChangeUILanguage(event) {
     extension_settings[extensionName].ui_language = language;
     saveSettingsDebounced();
     // wait asynchronously
-    await delay(durationSaveEdit);    // apparently we need to wait, otherwise it does not get stored
+    await delay(DEFAULT_SAVE_EDIT_TIMEOUT); // apparently we need to wait, otherwise it does not get stored, https://github.com/SillyTavern/SillyTavern/compare/1.12.1...1.12.2
     setUILanguage(language);
 }
 
@@ -112,16 +112,16 @@ function resetTimer() {
 
 async function applySettings() {
     if (extension_settings[extensionName].disable_slash_commands) {
-        console.log('Disabling slash commands');
-        // some commands are added dynamically after this point, even if this extension is loaded as the last one,
-        // so we overwrite it by dummy method which does not do anything
-        // assign it a lambda with following signature addCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true)
-        parser.addCommand = dummyAddCommand;
-        // need to rewrite the following functions, because otherwise they keep the reference to the original ones
-        setRegisterSlashCommand(dummyAddCommand);
-        // due to the asynchronous nature of loading extensions, I need to first disable adding new stuff and then clear the existing ones
-        parser.commands = {};
-        parser.helpStrings = {};
+        // console.log('Disabling slash commands');
+        // // some commands are added dynamically after this point, even if this extension is loaded as the last one,
+        // // so we overwrite it by dummy method which does not do anything
+        // // assign it a lambda with following signature addCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true)
+        // parser.addCommand = dummyAddCommand;
+        // // need to rewrite the following functions, because otherwise they keep the reference to the original ones
+        // setRegisterSlashCommand(dummyAddCommand);
+        // // due to the asynchronous nature of loading extensions, I need to first disable adding new stuff and then clear the existing ones
+        // parser.commands = {};
+        // parser.helpStrings = {};
     }
     if (extension_settings[extensionName].hide_panels) {
         doTogglePanels();
