@@ -5,7 +5,7 @@
 import {extension_settings} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
-import {doTogglePanels, saveSettingsDebounced, DEFAULT_SAVE_EDIT_TIMEOUT, doNewChat} from '../../../../script.js';
+import {doTogglePanels, saveSettingsDebounced, DEFAULT_SAVE_EDIT_TIMEOUT, doNewChat, event_types, eventSource} from '../../../../script.js';
 // import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
 
 // Keep track of where your extension is located, name should match repo name
@@ -185,5 +185,16 @@ jQuery(async () => {
     await loadSettings();
     // this must run after all other extensions have finished loading, otherwise their commands will be present
     await applySettings();
-
+    eventSource.on(event_types.TEXT_COMPLETION_SETTINGS_READY, async (name) => {
+        console.log('emitted TEXT_COMPLETION_SETTINGS_READY:', name);
+    });
+    eventSource.on(event_types.GENERATE_BEFORE_COMBINE_PROMPTS, async (name) => {
+        console.log('emitted GENERATE_BEFORE_COMBINE_PROMPTS:', name);
+    });
+    eventSource.on(event_types.GENERATE_AFTER_COMBINE_PROMPTS, async (name) => {
+        console.log('emitted GENERATE_AFTER_COMBINE_PROMPTS:', name);
+    });
+    eventSource.on(event_types.GENERATE_AFTER_DATA, async (name) => {
+        console.log('emitted GENERATE_AFTER_DATA:', name);
+    });
 });
