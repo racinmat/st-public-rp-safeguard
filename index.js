@@ -186,15 +186,15 @@ jQuery(async () => {
     // this must run after all other extensions have finished loading, otherwise their commands will be present
     await applySettings();
     eventSource.on(event_types.TEXT_COMPLETION_SETTINGS_READY, async (name) => {
-        console.log('emitted TEXT_COMPLETION_SETTINGS_READY:', name);
+        console.debug('emitted TEXT_COMPLETION_SETTINGS_READY:', name);
     });
     eventSource.on(event_types.GENERATE_BEFORE_COMBINE_PROMPTS, async (name) => {
-        console.log('emitted GENERATE_BEFORE_COMBINE_PROMPTS:', name);
+        console.debug('emitted GENERATE_BEFORE_COMBINE_PROMPTS:', name);
     });
     eventSource.on(event_types.GENERATE_AFTER_COMBINE_PROMPTS, async (name) => {
-        console.log('emitted GENERATE_AFTER_COMBINE_PROMPTS:', name);
+        console.debug('emitted GENERATE_AFTER_COMBINE_PROMPTS:', name);
     });
     eventSource.on(event_types.GENERATE_AFTER_DATA, async (name) => {
-        console.log('emitted GENERATE_AFTER_DATA:', name);
+        console.debug('emitted GENERATE_AFTER_DATA:', name);
     });
 });
