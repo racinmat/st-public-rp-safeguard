@@ -2,10 +2,11 @@
 // The following are examples of some basic extension functionality
 
 //You'll likely need to import extension_settings, getContext, and loadExtensionSettings from extensions.js
-import {extension_settings} from '../../../extensions.js';
+import {extension_settings, getConfigValues} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
 import {doTogglePanels, saveSettingsDebounced, DEFAULT_SAVE_EDIT_TIMEOUT, doNewChat, event_types, eventSource} from '../../../../script.js';
+// import {getConfigValue} from "../../../../src/util.js";
 // import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
 
 // Keep track of where your extension is located, name should match repo name
@@ -16,20 +17,35 @@ const defaultSettings = {};
 
 // Loads the extension settings if they exist, otherwise initializes them to the defaults.
 async function loadSettings() {
-    //Create the settings if they don't exist
-    extension_settings[extensionName] = extension_settings[extensionName] || {};
-    if (Object.keys(extension_settings[extensionName]).length === 0) {
-        Object.assign(extension_settings[extensionName], defaultSettings);
+    //try to load settings from config like this
+    console.debug("loading settings for", extensionName);
+    let ext_settings = extension_settings[extensionName] || {};
+    let settings_keys = Object.keys(ext_settings);
+    if (settings_keys.length === 0) {
+        Object.assign(ext_settings, defaultSettings);
     }
+    console.debug("loading settings for", settings_keys, "in", extensionName);
+    // dict comprehension
+    settings_keys = settings_keys.map(key => ({ key: key, typeConverter: 'boolean' }));
+
+    const extension_server_config = await getConfigValues(extensionName, settings_keys);
+    console.debug('extension_server_config:', extension_server_config);
+
+    // server config to extension settings
+    for (const key in ext_settings) {
+        if (extension_server_config[key] !== undefined) {
+            ext_settings[key] = extension_server_config[key];
+        }
+    }
+    console.debug('extension_settings:', ext_settings);
 
     // Updating settings in the UI
-    $('#rp-safeguard-disable-commands').prop('checked', extension_settings[extensionName].disable_slash_commands).trigger('input');
-    $('#rp-safeguard-hide-panels').prop('checked', extension_settings[extensionName].hide_panels).trigger('input');
-    $('#rp-safeguard-add-reset-button').prop('checked', extension_settings[extensionName].add_reset_button).trigger('input');
-    $('#rp-safeguard-hide-menus').prop('checked', extension_settings[extensionName].hide_menus).trigger('input');
-    $('#rp-safeguard-restart-idle-chat').prop('checked', extension_settings[extensionName].restart_idle_chat).trigger('input');
-    console.log('loaded language:', extension_settings[extensionName].ui_language);
-    $('#rp-safeguard-ui-language').val(extension_settings[extensionName].ui_language).trigger('input');
+    $('#rp-safeguard-disable-commands').prop('checked', ext_settings.disable_slash_commands).trigger('input');
+    $('#rp-safeguard-hide-panels').prop('checked', ext_settings.hide_panels).trigger('input');
+    $('#rp-safeguard-add-reset-button').prop('checked', ext_settings.add_reset_button).trigger('input');
+    $('#rp-safeguard-hide-menus').prop('checked', ext_settings.hide_menus).trigger('input');
+    $('#rp-safeguard-restart-idle-chat').prop('checked', ext_settings.restart_idle_chat).trigger('input');
+    $('#rp-safeguard-ui-language').val(ext_settings.ui_language).trigger('input');
 }
 
 function onDisableSlashCommands(event) {
