@@ -6,7 +6,6 @@ import {extension_settings, getConfigValues} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
 import {doTogglePanels, saveSettingsDebounced, DEFAULT_SAVE_EDIT_TIMEOUT, doNewChat, event_types, eventSource} from '../../../../script.js';
-// import {getConfigValue} from "../../../../src/util.js";
 // import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
 
 // Keep track of where your extension is located, name should match repo name
