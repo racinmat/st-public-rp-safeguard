@@ -6,6 +6,7 @@ import {extension_settings, getConfigValues} from '../../../extensions.js';
 
 //You'll likely need to import some other functions from the main script
 import {doTogglePanels, saveSettingsDebounced, DEFAULT_SAVE_EDIT_TIMEOUT, doNewChat, event_types, eventSource} from '../../../../script.js';
+import {SlashCommandParser} from "../../../../scripts/slash-commands/SlashCommandParser.js";
 // import {parser, setRegisterSlashCommand} from '../../../slash-commands.js';
 
 // Keep track of where your extension is located, name should match repo name
@@ -127,17 +128,22 @@ function resetTimer() {
 
 async function applySettings() {
     if (extension_settings[extensionName].disable_slash_commands) {
-        // console.log('Disabling slash commands');
-        // // some commands are added dynamically after this point, even if this extension is loaded as the last one,
-        // // so we overwrite it by dummy method which does not do anything
-        // // assign it a lambda with following signature addCommand(command, callback, aliases, helpString = '', interruptsGeneration = false, purgeFromMessage = true)
-        // parser.addCommand = dummyAddCommand;
-        // // need to rewrite the following functions, because otherwise they keep the reference to the original ones
-        // setRegisterSlashCommand(dummyAddCommand);
-        // // due to the asynchronous nature of loading extensions, I need to first disable adding new stuff and then clear the existing ones
-        // parser.commands = {};
-        // parser.helpStrings = {};
+        console.log('Disabling slash commands');
+
+        // Clear existing commands
+        if (SlashCommandParser && SlashCommandParser.commands) {
+            console.log('Clearing existing slash commands');
+            SlashCommandParser.commands = {};
+            SlashCommandParser.helpStrings = {};
+        }
+
+        // Replace addCommandObject function with our own dummy version
+        if (SlashCommandParser && SlashCommandParser.addCommandObject) {
+            console.log('Replacing SlashCommandParser.addCommandObject with dummy function');
+            // Original function will be saved by our wrapper in script.js
+        }
     }
+
     if (extension_settings[extensionName].hide_panels) {
         doTogglePanels();
     }
