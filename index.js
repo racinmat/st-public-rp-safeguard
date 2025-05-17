@@ -140,7 +140,15 @@ async function applySettings() {
         // Replace addCommandObject function with our own dummy version
         if (SlashCommandParser && SlashCommandParser.addCommandObject) {
             console.log('Replacing SlashCommandParser.addCommandObject with dummy function');
-            // Original function will be saved by our wrapper in script.js
+            // Store the original function if needed later
+            if (!SlashCommandParser._originalAddCommandObject) {
+                SlashCommandParser._originalAddCommandObject = SlashCommandParser.addCommandObject;
+            }
+            // Replace with dummy function that logs but doesn't add commands
+            SlashCommandParser.addCommandObject = function(commandObj) {
+                console.log('Command blocked by st-public-rp-safeguard:', commandObj.name);
+                return false;
+            };
         }
     }
 
